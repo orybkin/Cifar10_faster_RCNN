@@ -14,7 +14,7 @@ def denorm_img(img):
   return (img + 1.) * 127.5
 
 class Trainer(object):
-  def __init__(self, config, data_loader, label_loader, test_data_loader, test_label_loader):
+  def __init__(self, config, data_loader, label_loader, test_data_loader, test_label_loader, train_location_loader, train_size_loader,  test_location_loader, test_size_loader, model):
     self.config = config
     self.data_loader = data_loader
     self.label_loader = label_loader
@@ -24,6 +24,12 @@ class Trainer(object):
     self.optimizer = config.optimizer
     self.batch_size = config.batch_size
     self.batch_size_test = config.batch_size_test
+
+    self.train_location_loader=train_location_loader
+    self.train_size_loader=train_size_loader
+    self.test_location_loader=test_location_loader
+    self.test_size_loader=test_size_loader
+    self.model=model
 
     self.step = tf.Variable(0, name='step', trainable=False)
     self.start_step = 0
@@ -117,16 +123,16 @@ class Trainer(object):
     self.labels = self.label_loader
     x = norm_img(self.x)
 
-    self.c_loss, feat, self.accuracy, self.c_var = quick_cnn(
+    self.c_loss, feat, self.accuracy, self.c_var = self.model(
       x, self.labels, self.c_num, self.batch_size, is_train=True, reuse=False)
     self.c_loss = tf.reduce_mean(self.c_loss, 0)
 
     # Gather gradients of conv1 & fc4 weights for logging
-    with tf.variable_scope("C/conv1", reuse=True):
+    with tf.variable_scope("C/first", reuse=True):
       conv1_weights = tf.get_variable("weights")
     conv1_grad = tf.reduce_max(tf.abs(tf.gradients(self.c_loss, conv1_weights, self.c_loss)))
 
-    with tf.variable_scope("C/fc4", reuse=True):
+    with tf.variable_scope("C/last", reuse=True):
       fc4_weights = tf.get_variable("weights")
     fc4_grad = tf.reduce_max(tf.abs(tf.gradients(self.c_loss, fc4_weights, self.c_loss)))
 
@@ -180,5 +186,5 @@ class Trainer(object):
     self.test_labels = self.test_label_loader
     test_x = norm_img(self.test_x)
 
-    loss, self.test_feat, self.test_accuracy, var = quick_cnn(
+    loss, self.test_feat, self.test_accuracy, var = self.model(
       test_x, self.test_labels, self.c_num, self.batch_size_test, is_train=False, reuse=True)
