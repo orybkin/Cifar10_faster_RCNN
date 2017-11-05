@@ -35,5 +35,12 @@ def main(config, model):
 if __name__ == "__main__":
   config, unparsed = get_config()
 
-  model=ConvNet
+  # Task 1
+
+  # # Subtask 1
+  # model=ConvNet
+  # main(config, model)
+
+  # Subtask 2
+  model=MobileNet
   main(config, model)

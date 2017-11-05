@@ -18,6 +18,38 @@ def conv_factory(x, hidden_num, kernel_size, stride, is_train, reuse):
 #  x = tf.nn.sigmoid(x)
   return x
 
+
+def sepconv_factory(x, hidden_num, kernel_size, stride, is_train, reuse):
+  # separable convolution as in MobileNet paper
+
+
+  # with tf.variable_scope('dw', reuse=reuse): # not used because of legacy
+  vs = tf.get_variable_scope()
+  in_channels = x.get_shape()[3]
+  W = tf.get_variable('weights', [kernel_size,kernel_size,in_channels, 1],
+        initializer = tf.contrib.layers.variance_scaling_initializer())
+  b = tf.get_variable('biases', [1, 1, 1, in_channels],
+        initializer = tf.constant_initializer(0.0))
+
+  x = tf.nn.depthwise_conv2d(x, W, strides=[1,stride,stride,1], padding='SAME')
+#  x = slim.batch_norm(x, is_training=is_train, reuse=reuse, scale=True,
+#        fused=True, scope=vs, updates_collections=None)
+  x = batch_norm(x, is_train=is_train)
+  x = tf.nn.relu(x)
+
+
+  with tf.variable_scope('1x1', reuse=reuse):
+    W = tf.get_variable('weights', [1,1,in_channels,hidden_num],
+          initializer = tf.contrib.layers.variance_scaling_initializer())
+    b = tf.get_variable('biases', [1, 1, 1, hidden_num],
+          initializer = tf.constant_initializer(0.0))
+    x = tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
+    x = batch_norm(x, is_train=is_train)
+    x = tf.nn.relu(x)
+  #  x = tf.nn.sigmoid(x)
+
+  return x
+
 def fc_factory(x, hidden_num, is_train, reuse):
 
   vs = tf.get_variable_scope()
