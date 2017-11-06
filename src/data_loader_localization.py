@@ -65,6 +65,8 @@ def get_loader(root, batch_size, split=None, shuffle=True):
     img.set_shape([48, 48, 3])
     img = tf.cast(img, tf.float32)
 
+    img = tf.image.per_image_standardization(img)
+
     img_batch, lab_batch, locations_batch, sizes_batch = tf.train.batch([img, lab, location, size], num_threads=1,
                            batch_size=batch_size, capacity=10*batch_size)
 

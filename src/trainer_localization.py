@@ -14,7 +14,7 @@ def denorm_img(img):
   return (img + 1.) * 127.5
 
 class Trainer(object):
-  def __init__(self, config, data_loader, label_loader, test_data_loader, test_label_loader, model):
+  def __init__(self, config, data_loader, label_loader, test_data_loader, test_label_loader, train_location_loader, train_size_loader,  test_location_loader, test_size_loader, model):
     self.config = config
     self.data_loader = data_loader
     self.label_loader = label_loader
@@ -25,6 +25,10 @@ class Trainer(object):
     self.batch_size = config.batch_size
     self.batch_size_test = config.batch_size_test
 
+    self.train_location_loader=train_location_loader
+    self.train_size_loader=train_size_loader
+    self.test_location_loader=test_location_loader
+    self.test_size_loader=test_size_loader
     self.model=model
 
     self.step = tf.Variable(0, name='step', trainable=False)

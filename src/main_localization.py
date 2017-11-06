@@ -13,17 +13,17 @@ def main(config, model):
   rng = np.random.RandomState(config.random_seed)
   tf.set_random_seed(config.random_seed)
 
-  train_data_loader, train_label_loader = get_loader(
-    config.data_path, config.batch_size, config, 'train', True)
+  train_data_loader, train_label_loader, train_location_loader, train_size_loader = get_loader(
+    config.data_path, config.batch_size, 'train', True)
 
   if config.is_train:
-    test_data_loader, test_label_loader = get_loader(
-      config.data_path, config.batch_size_test, config, 'test', False)
+    test_data_loader, test_label_loader, test_location_loader, test_size_loader = get_loader(
+      config.data_path, config.batch_size_test, 'test', False)
   else:
-    test_data_loader, test_label_loader = get_loader(
-      config.data_path, config.batch_size_test,  config, config.split, False)
+    test_data_loader, test_label_loader, test_location_loader, test_size_loader = get_loader(
+      config.data_path, config.batch_size_test, config.split, False)
 
-  trainer = Trainer(config, train_data_loader, train_label_loader, test_data_loader, test_label_loader, model)
+  trainer = Trainer(config, train_data_loader, train_label_loader, test_data_loader, test_label_loader, train_location_loader, train_size_loader,  test_location_loader, test_size_loader, model)
   if config.is_train:
     save_config(config)
     trainer.train()
@@ -31,7 +31,6 @@ def main(config, model):
     if not config.load_path:
       raise Exception("[!] You should specify `load_path` to load a pretrained model")
     trainer.test()
-
 
 if __name__ == "__main__":
   config, unparsed = get_config()
@@ -41,11 +40,7 @@ if __name__ == "__main__":
   # # Subtask 1
   # model=ConvNet
   # main(config, model)
-  #
-  # # Subtask 2
-  # model=MobileNet
-  # main(config, model)
 
-  # Subtask 3
-  model=ResNet
+  # Subtask 2
+  model=MobileNet
   main(config, model)
