@@ -99,3 +99,6 @@ def batch_norm(x, is_train=True, decay=0.99, epsilon=0.001):
     mean = moving_mean
     var = moving_var
     return tf.nn.batch_normalization(x, mean, var, beta, gamma, epsilon)
+
+def smooth_l1(x):
+  return tf.where(tf.less(tf.abs(x),1), 0.5*tf.pow(x,2), tf.abs(x)-0.5)

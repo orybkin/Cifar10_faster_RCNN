@@ -18,7 +18,7 @@ net_arg.add_argument('--c_num', type=int, default=10)  # Number of classes
 
 # Data
 data_arg = add_argument_group('Data')
-data_arg.add_argument('--dataset', type=str, default='cifar10', choices=['cifar10', 'cifar100'])
+data_arg.add_argument('--dataset', type=str, default='cifar10_transformed', choices=['cifar10', 'cifar10_transformed'])
 data_arg.add_argument('--split', type=str, default='train')
 data_arg.add_argument('--batch_size', type=int, default=100)
 data_arg.add_argument('--batch_size_test', type=int, default=100)
