@@ -63,9 +63,9 @@ def resblock_factory(x, hidden_num, kernel_size, stride, is_train, reuse):
     x1 = batch_norm(x1, is_train=is_train)
 
     with tf.variable_scope('1', reuse=reuse):
-        x2 = conv_factory(x, hidden_num, kernel_size, 1, is_train, reuse)
+        x2 = conv_factory(x, hidden_num, 3, 1, is_train, reuse)
     with tf.variable_scope('2', reuse=reuse):
-        W = tf.get_variable('weights', [kernel_size, kernel_size, hidden_num, hidden_num],
+        W = tf.get_variable('weights', [3, 3, hidden_num, hidden_num],
                             initializer=tf.contrib.layers.variance_scaling_initializer())
         x2 = tf.nn.conv2d(x2, W, strides=[1, 1, 1, 1], padding='SAME')
 

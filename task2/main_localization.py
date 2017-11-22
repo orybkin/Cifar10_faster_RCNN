@@ -36,7 +36,7 @@ def main(config, model, conv_block):
 
 if __name__ == "__main__":
   config, unparsed = get_config()
-
+  np.set_printoptions(precision=2, suppress=True)
   # Task 3
 
   # model=RCNN
@@ -46,5 +46,8 @@ if __name__ == "__main__":
   # main(config, model, sepconv_factory)
 
   model=RCNN
-  main(config, model, resblock_factory)
+  conv_block=conv_factory # subtask 1
+  # conv_block=sepconv_factory
+  # conv_block=resblock_factory
+  main(config, model, conv_block)
 

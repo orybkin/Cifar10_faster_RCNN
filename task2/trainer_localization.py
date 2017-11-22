@@ -105,7 +105,12 @@ class Trainer(object):
             result = self.sess.run(fetch_dict)
 
             # print(result['mask'][0])
-            # print(result['x_cls'][0])
+            # print(result['x_cls'][0][0][:,:,0])
+            # print((result['x_cls'][1][0:10].T))
+            # print(result['x_cls'][2][0:10,:].T)
+            # print((result['x_cls'][3][0:10,:].T))
+            # print((result['x_cls'][4][0:10].T))
+
 
             if step % self.log_step == self.log_step - 1:
                 self.summary_writer.add_summary(result['summary'], step)
